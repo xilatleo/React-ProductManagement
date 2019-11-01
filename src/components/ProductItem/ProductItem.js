@@ -2,14 +2,19 @@ import React, { Component } from "react";
 
 export class ProductItem extends Component {
   render() {
+    var {product, index } = this.props
+    var statusName = product.status ? 'Instock' : 'OutOfStock'
+    var statusClass = product.status ? 'warning' : 'default'
     return (
       <tr>
-                <td>1</td>
-                <td>1</td>
-                <td>IPhone 6 Plus</td>
-                <td>500</td>
+                <td>{index + 1}</td>
+                <td>{product.id}</td>
+                <td>{product.name}</td>
+                <td>{product.price}</td>
                 <td>
-                  <span className="label label-warning">Instock</span>
+                  <span className={`label label-${statusClass}`}>
+                    {statusName}
+                  </span>
                 </td>
                 <td>
                   <button
