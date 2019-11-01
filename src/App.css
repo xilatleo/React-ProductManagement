@@ -18,5 +18,14 @@
 }
 
 .App-link {
-  color: #09d3ac;
+  color:white
+}
+
+nav ul li a {
+  margin-right: 20px;
+  color: white;
+}
+nav ul li a:hover {
+  color: lightslategray; 
+  text-decoration: none;
 }

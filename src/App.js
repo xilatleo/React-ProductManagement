@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Menu from "./components/Menu/Menu";
-
+import './App.css'
 import routes from "./routes";
 import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
 import ProductListPage from "./pages/ProductListPage/ProductListPage";
