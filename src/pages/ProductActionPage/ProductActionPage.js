@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import callAPI from "./../../utils/apiCaller";
 import {Link} from 'react-router-dom'
+import {actAddProductRequest, actGetProductRequest,actUpdateProductRequest} from './../../actions/index'
+import {connect} from 'react-redux'
 export class ProductActionPage extends Component {
   constructor(props) {
     super(props)
@@ -12,6 +13,28 @@ export class ProductActionPage extends Component {
        chkbStatus: ''
     }
   }
+
+
+  componentDidMount() {
+    var {match} = this.props
+    if(match){
+      var id = match.params.id
+      this.props.onEditProduct(id)
+    }
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps){
+    if(nextProps && nextProps.itemEditing){
+      var {itemEditing} = nextProps
+      this.setState({
+        id: itemEditing.id,
+        txtName: itemEditing.name,
+        txtPrice: itemEditing.price,
+        chkbStatus: itemEditing.status
+      })
+    }
+  }
+
   onChange = (e) => {
     var target = e.target
     var name = target.name
@@ -22,16 +45,23 @@ export class ProductActionPage extends Component {
   }
   onSave = (e) => {
     e.preventDefault()
-    var {txtName, txtPrice, chkbStatus} = this.state
+    var {id,txtName, txtPrice, chkbStatus} = this.state
     var {history} = this.props
-    callAPI('products', 'POST', {
+    var product = {
+      id : id,
       name: txtName,
-      price:txtPrice,
+      price: txtPrice,
       status: chkbStatus
-    }).then(res => {
+    }
+    if(id){
+      this.props.onUpdateProduct(product)
+    }else{
+      this.props.onAddProduct(product)
       history.goBack()
-    })
+    }
+    history.goBack()
   }
+
 
   render() {
     var {txtPrice, txtName, chkbStatus} = this.state
@@ -70,6 +100,7 @@ export class ProductActionPage extends Component {
             name="chkbStatus"
             value = {chkbStatus}
            onChange = {this.onChange}
+           checked = {chkbStatus}
             />
             Instock
           </label>
@@ -85,5 +116,23 @@ export class ProductActionPage extends Component {
   }
   
 }
+const mapStateToProps = state => {
+  return {
+      itemEditing : state.itemEditing
+  }
+}
 
-export default ProductActionPage;
+const mapDispatchToProps = (dispatch, props) => {
+  return {
+      onAddProduct : (product) => {
+          dispatch(actAddProductRequest(product));
+      },
+      onEditProduct : (id) => {
+          dispatch(actGetProductRequest(id));
+       },
+       onUpdateProduct : (product) => {
+         dispatch(actUpdateProductRequest(product));
+       }
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(ProductActionPage)
