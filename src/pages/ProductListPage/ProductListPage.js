@@ -1,22 +1,40 @@
 import React, { Component } from "react";
 import ProductList from "./../../components/ProductList/ProductList";
 import ProductItem from "./../../components/ProductItem/ProductItem";
-import {connect} from 'react-redux'
-
+import { connect } from "react-redux";
+import callAPI from "./../../utils/apiCaller";
+import {Link } from 'react-router-dom'
 
 export class ProductListPage extends Component {
+  constructor(props) {
+    super(props);
+    
+    this.state = {
+      products: []
+    };
+  }
+
+  componentDidMount() {
+    callAPI('products', 'GET', null).then(res => {
+      this.setState({
+        products : res.data
+      })
+    })
+  }
+
   render() {
-    var {products} = this.props;
+    //var {products} = this.props;
+    var {products} = this.state
 
     return (
       <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <button
-          type="button"
+        <Link
+          to = "/product/add"
           className="btn btn-info"
           style={{ marginBottom: 10, marginTop: 10 }}
         >
           Add Product
-        </button>
+        </Link>
         <ProductList>{this.showProducts(products)}</ProductList>
       </div>
     );
@@ -34,8 +52,10 @@ export class ProductListPage extends Component {
 const mapStateToProps = state => {
   return {
     products: state.products
-  }
-}
+  };
+};
 
-
-export default connect(mapStateToProps,null)(ProductListPage);
+export default connect(
+  mapStateToProps,
+  null
+)(ProductListPage);
